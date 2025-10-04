@@ -3,7 +3,7 @@
     "password": "admin123",
     "github_username": "yous8983",
     "default_monorepo_url": "git@github.com:yous8983/dashboard_grok.git",
-    "central_directory": "/home/yous/MyApps",
+    "central_directory": "/home/yous/PROJECTS/grok",
     "templates": {
         "python": {
             "files": {

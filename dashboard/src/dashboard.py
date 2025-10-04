@@ -2,7 +2,7 @@ import os
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QGridLayout, QLabel, QPushButton, QProgressBar, QMessageBox
 from PyQt6.QtGui import QPalette, QColor
-from app_manager import load_config, push_changes, pull_changes, status, list_commits, get_version, authenticate
+from app_manager import load_config, push_changes, pull_changes, status, list_commits, get_version, authenticate, create_project
 import git
 
 class Dashboard(QMainWindow):
@@ -11,8 +11,8 @@ class Dashboard(QMainWindow):
         self.config = self.login()
         if not self.config:
             sys.exit(1)
-        # Push all projects at startup
-        self.push_all_projects()
+        # Initialize and push all projects at startup
+        self.initialize_and_push_all_projects()
         self.setWindowTitle("Dashboard Grok")
         self.setGeometry(100, 100, 800, 600)
 
@@ -42,16 +42,22 @@ class Dashboard(QMainWindow):
                 return load_config()
             print("Invalid credentials. Try again.")
 
-    def push_all_projects(self):
+    def initialize_and_push_all_projects(self):
         projects = [d for d in os.listdir(self.config["central_directory"]) if os.path.isdir(os.path.join(self.config["central_directory"], d))]
         for project in projects:
             project_path = os.path.join(self.config["central_directory"], project)
             try:
+                print(f"Processing {project}...")
+                # Initialize as Git repository if not already
+                if not os.path.exists(os.path.join(project_path, ".git")):
+                    print(f"Initializing Git repository for {project}...")
+                    create_project(project, "empty", self.config, link_remote=True, init_git=True)
+                # Push changes
                 print(f"Pushing changes for {project}...")
                 push_changes(project_path, self.config)
                 print(f"Push completed for {project}.")
             except Exception as e:
-                print(f"Failed to push {project}: {e}")
+                print(f"Failed to process {project}: {e}")
 
     def update_dashboard(self):
         for i in reversed(range(self.grid.count())):

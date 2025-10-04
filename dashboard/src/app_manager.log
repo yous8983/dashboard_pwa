@@ -9,3 +9,29 @@
 2025-10-04 19:37:56,505 - INFO - Status checked for /home/yous/MyApps/test_new
 2025-10-04 19:38:00,535 - INFO - Pull from remote completed successfully for /home/yous/MyApps/test_new
 2025-10-04 19:38:04,882 - INFO - Listed 6 commits for /home/yous/MyApps/test_new
+2025-10-04 19:51:20,297 - INFO - Config updated.
+2025-10-04 19:51:20,297 - INFO - Config loaded and migrated successfully.
+2025-10-04 19:51:20,298 - INFO - Config updated.
+2025-10-04 19:51:20,300 - INFO - Config loaded and migrated successfully.
+2025-10-04 19:51:20,421 - ERROR - Error linking to remote: Cmd('git') failed due to: exit code(1)
+  cmdline: git branch --set-upstream-to origin/main
+  stderr: 'error: the requested upstream branch 'origin/main' does not exist
+hint: 
+hint: If you are planning on basing your work on an upstream
+hint: branch that already exists at the remote, you may need to
+hint: run "git fetch" to retrieve it.
+hint: 
+hint: If you are planning to push out a new local branch that
+hint: will track its remote counterpart, you may want to use
+hint: "git push -u" to set the upstream config as you push.'
+2025-10-04 19:51:20,475 - INFO - Committed changes automatically for /home/yous/PROJECTS/grok/dashboard
+2025-10-04 19:51:22,299 - ERROR - Error during push for /home/yous/PROJECTS/grok/dashboard: Cmd('git') failed due to: exit code(1)
+  cmdline: git push --set-upstream origin main
+  stderr: 'To github.com:yous8983/dashboard_grok.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'github.com:yous8983/dashboard_grok.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.'
