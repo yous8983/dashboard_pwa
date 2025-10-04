@@ -1,0 +1,22 @@
+{
+    "github_username": "yous8983",
+    "default_monorepo_url": "git@github.com:yous8983/dashboard_grok.git",
+    "central_directory": "/home/yous/PROJECTS/grok",
+    "templates": {
+        "python": {
+            "files": {
+                "main.py": "# Default Python code\nprint('Hello World')\n"
+            }
+        },
+        "web": {
+            "files": {
+                "index.html": "<html><body><h1>Hello</h1></body></html>"
+            }
+        },
+        "empty": {
+            "files": {}
+        }
+    },
+    "username": "admin",
+    "password": "admin123"
+}
