@@ -35,3 +35,28 @@ hint: not have locally. This is usually caused by another repository pushing
 hint: to the same ref. You may want to first integrate the remote changes
 hint: (e.g., 'git pull ...') before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.'
+2025-10-04 19:51:23,936 - ERROR - Error during push for /home/yous/PROJECTS/grok/.git: Cmd('git') failed due to: exit code(1)
+  cmdline: git push --set-upstream origin main
+  stderr: 'To github.com:yous8983/dashboard_grok.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'github.com:yous8983/dashboard_grok.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.'
+2025-10-04 19:51:24,043 - INFO - Listed 2 commits for /home/yous/PROJECTS/grok/dashboard
+2025-10-04 19:51:24,065 - INFO - Listed 2 commits for /home/yous/PROJECTS/grok/.git
+2025-10-04 20:29:34,021 - INFO - Config updated.
+2025-10-04 20:29:34,022 - INFO - Config loaded and migrated successfully.
+2025-10-04 20:29:34,023 - INFO - Config updated.
+2025-10-04 20:29:34,024 - INFO - Config loaded and migrated successfully.
+2025-10-04 20:29:34,070 - INFO - Committed changes automatically for /home/yous/PROJECTS/grok/dashboard
+2025-10-04 20:29:35,571 - ERROR - Error during push for /home/yous/PROJECTS/grok/dashboard: Cmd('git') failed due to: exit code(1)
+  cmdline: git push --set-upstream origin main
+  stderr: 'To github.com:yous8983/dashboard_grok.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'github.com:yous8983/dashboard_grok.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.'
