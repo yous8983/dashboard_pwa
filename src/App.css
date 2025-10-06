@@ -40,3 +40,41 @@
 .read-the-docs {
   color: #888;
 }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: #1e1e1e;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0 0 10px;
+}
+
+.stat-card p {
+  font-size: 24px;
+  margin: 0;
+}
+
+.stat-card span {
+  display: block;
+  color: #4caf50;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.new-project-btn {
+  background: #6a1b9a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+  cursor: pointer;
+}
