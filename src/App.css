@@ -78,3 +78,8 @@
   margin-top: 20px;
   cursor: pointer;
 }
+
+.chart-container {
+  max-width: 600px;
+  margin: 20px auto;
+}
