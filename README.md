@@ -77,3 +77,4 @@ Roadmap séquencée pour le développement, avec estimations de temps pour un d�
 
 9. **Tests & Rafinements (2 jours)**
    - Tests unitaires, responsive, offline.
+
