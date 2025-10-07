@@ -1,0 +1,2839 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zarsa Football Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #5B9BD5;
+            --accent-light: #7FB3E8;
+            --accent-dark: #4A7FB8;
+            --success: #00d9a3;
+            --warning: #ffa726;
+            --text: #ffffff;
+            --text-secondary: #b8b8d4;
+            --card-bg: rgba(22, 33, 62, 0.8);
+            --card-hover: rgba(22, 33, 62, 0.95);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #0f3460 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        body.light-mode {
+            --primary: #f0f4f8;
+            --secondary: #ffffff;
+            --accent: #5B9BD5;
+            --accent-light: #7FB3E8;
+            --accent-dark: #4A7FB8;
+            --success: #00d9a3;
+            --warning: #ffa726;
+            --text: #1a1a2e;
+            --text-secondary: #4a5568;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-hover: rgba(255, 255, 255, 1);
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--accent);
+            background: rgba(91, 155, 213, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(91, 155, 213, 0.3);
+        }
+
+        .stat-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Team Sections */
+        .team-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            background: var(--card-bg);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: rgba(233, 69, 96, 0.1);
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+        }
+
+        th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            text-align: center;
+        }
+
+        td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td:first-child {
+            text-align: center;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: rgba(91, 155, 213, 0.1);
+        }
+
+        .team-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .highlight-row {
+            background: rgba(91, 155, 213, 0.15);
+        }
+
+        .highlight-row:hover {
+            background: rgba(91, 155, 213, 0.25) !important;
+        }
+
+        /* Match Cards */
+        .matches-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .match-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .match-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(91, 155, 213, 0.3);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .match-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .match-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .match-status.victory {
+            background: rgba(0, 217, 163, 0.2);
+            color: var(--success);
+        }
+
+        .match-status.upcoming {
+            background: rgba(255, 167, 38, 0.2);
+            color: var(--warning);
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .team {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .team h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .vs {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Scorers */
+        .scorers-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .scorer-item {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .scorer-item:hover {
+            background: var(--card-hover);
+            transform: translateX(10px);
+        }
+
+        .scorer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .scorer-rank {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .scorer-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .scorer-position {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .scorer-goals {
+            background: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Calendar */
+        .calendar-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .calendar-nav button {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-nav button:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            background: var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0.5rem;
+        }
+
+        .calendar-day:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.has-match {
+            border: 2px solid var(--accent);
+        }
+
+        .calendar-day-number {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .calendar-day-indicator {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* Admin Panel */
+        .admin-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(91, 155, 213, 0.4);
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .admin-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 32px rgba(91, 155, 213, 0.6);
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            background: var(--secondary);
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+            transition: var(--transition);
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .admin-panel.active {
+            right: 0;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .admin-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-admin {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-admin:hover {
+            transform: rotate(90deg);
+        }
+
+        .admin-content {
+            padding: 2rem;
+        }
+
+        .admin-section {
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+        }
+
+        .admin-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(91, 155, 213, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+        }
+
+        /* Player Card */
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .player-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(91, 155, 213, 0.3);
+        }
+
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .player-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-position {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .match-teams {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .admin-panel {
+                max-width: 100%;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tabs {
+                width: 100%;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 0.25rem;
+            }
+
+            .calendar-day {
+                font-size: 0.8rem;
+                padding: 0.25rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        /* Match Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--secondary);
+            border-radius: var(--border-radius);
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .match-detail-score {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+
+        .composition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .composition-team {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+        }
+
+        .composition-team h4 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .player-lineup {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .player-number {
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .events-timeline {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .event-time {
+            background: var(--accent);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .event-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+        }
+
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-item {
+            background: var(--secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .comment-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .comment-action {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: var(--transition);
+        }
+
+        .comment-action:hover {
+            color: var(--accent);
+        }
+
+        .comment-action.liked {
+            color: var(--accent);
+        }
+
+        /* Login Modal */
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-toggle a {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .auth-toggle a:hover {
+            text-decoration: underline;
+        }
+
+        /* Offline Indicator */
+        .offline-indicator {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: var(--warning);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 999;
+        }
+
+        .offline-indicator.show {
+            display: flex;
+        }
+
+        /* Like Button Animation */
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .liked {
+            animation: heartBeat 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-futbol"></i>
+                <span>Zarsa FC</span>
+            </div>
+            <nav>
+                <button class="menu-toggle" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#accueil"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="#equipes"><i class="fas fa-users"></i> Équipes</a></li>
+                    <li><a href="#matchs"><i class="fas fa-calendar"></i> Matchs</a></li>
+                    <li><a href="#statistiques"><i class="fas fa-chart-line"></i> Stats</a></li>
+                    <li><a href="#calendrier"><i class="fas fa-calendar-alt"></i> Calendrier</a></li>
+                </ul>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Stats Grid -->
+        <div class="stats-grid fade-in">
+            <div class="stat-card">
+                <h3><i class="fas fa-futbol"></i> Matchs Joués</h3>
+                <div class="stat-value">15</div>
+                <div class="stat-label">Total saison 2024/25</div>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-trophy"></i> Victoires</h3>
+                <div class="stat-value">9</div>
+                <div class="stat-label">60% de réussite</div>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-fire"></i> Buts Marqués</h3>
+                <div class="stat-value">34</div>
+                <div class="stat-label">2.3 par match</div>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-medal"></i> Classement</h3>
+                <div class="stat-value">3<sup>e</sup></div>
+                <div class="stat-label">Championnat A</div>
+            </div>
+        </div>
+
+        <!-- Zarsa A Section -->
+        <div class="team-section" id="equipes">
+            <div class="section-header">
+                <h2 class="section-title">Zarsa A - Seniors</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('classement-a', this)">Classement</button>
+                    <button class="tab-btn" onclick="switchTab('buteurs-a', this)">Buteurs</button>
+                    <button class="tab-btn" onclick="switchTab('joueurs-a', this)">Joueurs</button>
+                </div>
+            </div>
+
+            <div id="classement-a" class="tab-content">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Équipe</th>
+                                <th>J</th>
+                                <th>V</th>
+                                <th>N</th>
+                                <th>D</th>
+                                <th>BP</th>
+                                <th>BC</th>
+                                <th>Diff</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td class="team-name"><i class="fas fa-shield-alt" style="color: gold;"></i> FC Riviera</td>
+                                <td>6</td>
+                                <td>4</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>12</td>
+                                <td>5</td>
+                                <td>+7</td>
+                                <td><strong>13</strong></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td class="team-name"><i class="fas fa-shield-alt" style="color: silver;"></i> AS Port</td>
+                                <td>6</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>9</td>
+                                <td>7</td>
+                                <td>+2</td>
+                                <td><strong>11</strong></td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>3</td>
+                                <td class="team-name"><i class="fas fa-shield-alt" style="color: var(--accent);"></i> Zarsa A</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>+2</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td class="team-name"><i class="fas fa-shield-alt"></i> Olympique V</td>
+                                <td>6</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>4</td>
+                                <td>6</td>
+                                <td>15</td>
+                                <td>-9</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="buteurs-a" class="tab-content" style="display: none;">
+                <div class="scorers-list">
+                    <div class="scorer-item">
+                        <div class="scorer-info">
+                            <div class="scorer-rank">1</div>
+                            <div>
+                                <div class="scorer-name">M. Dubois</div>
+                                <div class="scorer-position">Attaquant</div>
+                            </div>
+                        </div>
+                        <div class="scorer-goals">5 <i class="fas fa-futbol"></i></div>
+                    </div>
+                    <div class="scorer-item">
+                        <div class="scorer-info">
+                            <div class="scorer-rank">2</div>
+                            <div>
+                                <div class="scorer-name">F. Kante</div>
+                                <div class="scorer-position">Milieu</div>
+                            </div>
+                        </div>
+                        <div class="scorer-goals">3 <i class="fas fa-futbol"></i></div>
+                    </div>
+                    <div class="scorer-item">
+                        <div class="scorer-info">
+                            <div class="scorer-rank">3</div>
+                            <div>
+                                <div class="scorer-name">L. Petit</div>
+                                <div class="scorer-position">Ailier</div>
+                            </div>
+                        </div>
+                        <div class="scorer-goals">2 <i class="fas fa-futbol"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="joueurs-a" class="tab-content" style="display: none;">
+                <div class="players-grid">
+                    <div class="player-card">
+                        <div class="player-avatar">9</div>
+                        <div class="player-name">M. Dubois</div>
+                        <div class="player-position">Attaquant</div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-avatar">7</div>
+                        <div class="player-name">F. Kante</div>
+                        <div class="player-position">Milieu</div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-avatar">11</div>
+                        <div class="player-name">L. Petit</div>
+                        <div class="player-position">Ailier</div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-avatar">1</div>
+                        <div class="player-name">A. Martin</div>
+                        <div class="player-position">Gardien</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zarsa B Section -->
+        <div class="team-section">
+            <div class="section-header">
+                <h2 class="section-title">Zarsa B - Vétérans</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('classement-b', this)">Classement</button>
+                    <button class="tab-btn" onclick="switchTab('buteurs-b', this)">Buteurs</button>
+                    <button class="tab-btn" onclick="switchTab('joueurs-b', this)">Joueurs</button>
+                </div>
+            </div>
+
+            <div id="classement-b" class="tab-content">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Équipe</th>
+                                <th>J</th>
+                                <th>V</th>
+                                <th>N</th>
+                                <th>D</th>
+                                <th>BP</th>
+                                <th>BC</th>
+                                <th>Diff</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight-row">
+                                <td>1</td>
+                                <td class="team-name"><i class="fas fa-shield-alt" style="color: gold;"></i> Zarsa B</td>
+                                <td>5</td>
+                                <td>4</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>14</td>
+                                <td>6</td>
+                                <td>+8</td>
+                                <td><strong>12</strong></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td class="team-name"><i class="fas fa-shield-alt" style="color: silver;"></i> Vétérans Club</td>
+                                <td>5</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>10</td>
+                                <td>5</td>
+                                <td>+5</td>
+                                <td><strong>10</strong></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td class="team-name"><i class="fas fa-shield-alt" style="color: #cd7f32;"></i> FC Anciens</td>
+                                <td>5</td>
+                                <td>2</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>8</td>
+                                <td>7</td>
+                                <td>+1</td>
+                                <td><strong>8</strong></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td class="team-name"><i class="fas fa-shield-alt"></i> US Seniors</td>
+                                <td>5</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>3</td>
+                                <td>5</td>
+                                <td>10</td>
+                                <td>-5</td>
+                                <td><strong>4</strong></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td class="team-name"><i class="fas fa-shield-alt"></i> AS Légende</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>3</td>
+                                <td>12</td>
+                                <td>-9</td>
+                                <td><strong>2</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="buteurs-b" class="tab-content" style="display: none;">
+                <div class="scorers-list">
+                    <div class="scorer-item">
+                        <div class="scorer-info">
+                            <div class="scorer-rank">1</div>
+                            <div>
+                                <div class="scorer-name">J. Bernard</div>
+                                <div class="scorer-position">Attaquant</div>
+                            </div>
+                        </div>
+                        <div class="scorer-goals">6 <i class="fas fa-futbol"></i></div>
+                    </div>
+                    <div class="scorer-item">
+                        <div class="scorer-info">
+                            <div class="scorer-rank">2</div>
+                            <div>
+                                <div class="scorer-name">P. Rousseau</div>
+                                <div class="scorer-position">Milieu offensif</div>
+                            </div>
+                        </div>
+                        <div class="scorer-goals">4 <i class="fas fa-futbol"></i></div>
+                    </div>
+                    <div class="scorer-item">
+                        <div class="scorer-info">
+                            <div class="scorer-rank">3</div>
+                            <div>
+                                <div class="scorer-name">T. Moreau</div>
+                                <div class="scorer-position">Ailier</div>
+                            </div>
+                        </div>
+                        <div class="scorer-goals">2 <i class="fas fa-futbol"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="joueurs-b" class="tab-content" style="display: none;">
+                <div class="players-grid">
+                    <div class="player-card">
+                        <div class="player-avatar">10</div>
+                        <div class="player-name">J. Bernard</div>
+                        <div class="player-position">Attaquant</div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-avatar">8</div>
+                        <div class="player-name">P. Rousseau</div>
+                        <div class="player-position">Milieu offensif</div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-avatar">7</div>
+                        <div class="player-name">T. Moreau</div>
+                        <div class="player-position">Ailier</div>
+                    </div>
+                    <div class="player-card">
+                        <div class="player-avatar">1</div>
+                        <div class="player-name">R. Lefebvre</div>
+                        <div class="player-position">Gardien</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="team-section" id="matchs">
+            <div class="section-header">
+                <h2 class="section-title">Matchs</h2>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label><i class="fas fa-users"></i> Équipe</label>
+                    <select id="filterTeam" onchange="filterMatches()">
+                        <option value="all">Toutes les équipes</option>
+                        <option value="zarsa-a">Zarsa A</option>
+                        <option value="zarsa-b">Zarsa B</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-trophy"></i> Compétition</label>
+                    <select id="filterCompetition" onchange="filterMatches()">
+                        <option value="all">Toutes</option>
+                        <option value="championnat">Championnat</option>
+                        <option value="coupe">Coupe</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-calendar"></i> Période</label>
+                    <select id="filterPeriod" onchange="filterMatches()">
+                        <option value="all">Tous</option>
+                        <option value="upcoming">À venir</option>
+                        <option value="finished">Terminés</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="matches-grid" id="matchesGrid">
+                <div class="match-card" data-team="zarsa-a" data-competition="coupe" data-status="upcoming" onclick="openMatchDetails(1)">
+                    <div class="match-header">
+                        <div class="match-date">
+                            <i class="far fa-calendar"></i> 24 nov. 2024 à 14:00
+                        </div>
+                        <span class="match-status upcoming">À venir</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team">
+                            <div class="team-logo">🛡️</div>
+                            <h3>Zarsa A</h3>
+                            <div style="color: var(--text-secondary);">Coupe</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <div class="team-logo">⚔️</div>
+                            <h3>US Blagnac</h3>
+                            <div style="color: var(--text-secondary);">Extérieur</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> Cliquez pour voir les détails
+                    </div>
+                </div>
+
+                <div class="match-card" data-team="zarsa-b" data-competition="championnat" data-status="finished" onclick="openMatchDetails(2)">
+                    <div class="match-header">
+                        <div class="match-date">
+                            <i class="far fa-calendar"></i> 27 oct. 2024
+                        </div>
+                        <span class="match-status victory">Victoire</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team">
+                            <div class="team-logo">🛡️</div>
+                            <h3>Zarsa B</h3>
+                            <div class="score">2</div>
+                        </div>
+                        <div class="vs">-</div>
+                        <div class="team">
+                            <div class="team-logo">⚔️</div>
+                            <h3>Vétérans Club</h3>
+                            <div class="score">0</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> Cliquez pour voir les détails
+                    </div>
+                </div>
+
+                <div class="match-card" data-team="zarsa-a" data-competition="championnat" data-status="upcoming" onclick="openMatchDetails(3)">
+                    <div class="match-header">
+                        <div class="match-date">
+                            <i class="far fa-calendar"></i> 10 nov. 2024 à 15:30
+                        </div>
+                        <span class="match-status upcoming">À venir</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team">
+                            <div class="team-logo">⚔️</div>
+                            <h3>AS Port</h3>
+                            <div style="color: var(--text-secondary);">Domicile</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <div class="team-logo">🛡️</div>
+                            <h3>Zarsa A</h3>
+                            <div style="color: var(--text-secondary);">Championnat</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> Cliquez pour voir les détails
+                    </div>
+                </div>
+            </div><div class="team-logo">🛡️</div>
+                            <h3>Zarsa A</h3>
+                            <div style="color: var(--text-secondary);">Championnat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="team-section" id="statistiques">
+            <div class="section-header">
+                <h2 class="section-title">Statistiques</h2>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title"><i class="fas fa-chart-line"></i> Performance de la Saison</h3>
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Comparaison Zarsa A vs Zarsa B</h3>
+                <canvas id="comparisonChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="team-section" id="calendrier">
+            <div class="section-header">
+                <h2 class="section-title">Calendrier</h2>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h3 id="calendarMonth">Novembre 2024</h3>
+                    <div class="calendar-nav">
+                        <button onclick="previousMonth()"><i class="fas fa-chevron-left"></i></button>
+                        <button onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Details Modal -->
+    <div class="modal" id="matchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-futbol"></i> Détails du Match</h2>
+                <button class="modal-close" onclick="closeMatchModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="matchModalBody">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-lock"></i> Connexion Admin</h2>
+                <button class="modal-close" onclick="closeLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="login-form">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Nom d'utilisateur</label>
+                            <input type="text" name="username" placeholder="admin" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mot de passe</label>
+                            <input type="password" name="password" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-sign-in-alt"></i> Se connecter
+                        </button>
+                    </form>
+                    <div class="auth-toggle">
+                        Mot de passe oublié ? <a onclick="showNotification('Contactez l\'administrateur', 'info')">Réinitialiser</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div class="offline-indicator" id="offlineIndicator">
+        <i class="fas fa-wifi-slash"></i>
+        <span>Mode hors ligne</span>
+    </div>
+
+    <!-- Admin Toggle Button -->
+    <button class="admin-toggle" onclick="checkAuthAndToggleAdmin()">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h2><i class="fas fa-user-shield"></i> Panneau Admin</h2>
+            <button class="close-admin" onclick="toggleAdmin()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="admin-content">
+            <!-- Add Match Section -->
+            <div class="admin-section">
+                <h3><i class="fas fa-plus-circle"></i> Ajouter un Match</h3>
+                <form id="addMatchForm">
+                    <div class="form-group">
+                        <label>Équipe</label>
+                        <select name="team">
+                            <option value="zarsa-a">Zarsa A</option>
+                            <option value="zarsa-b">Zarsa B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Adversaire</label>
+                        <input type="text" name="opponent" placeholder="Nom de l'équipe adverse" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date et Heure</label>
+                        <input type="datetime-local" name="datetime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Lieu</label>
+                        <select name="location">
+                            <option value="domicile">Domicile</option>
+                            <option value="exterieur">Extérieur</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Compétition</label>
+                        <select name="competition">
+                            <option value="championnat">Championnat</option>
+                            <option value="coupe">Coupe</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i> Enregistrer le Match
+                    </button>
+                </form>
+            </div>
+
+            <!-- Add Result Section -->
+            <div class="admin-section">
+                <h3><i class="fas fa-trophy"></i> Enregistrer un Résultat</h3>
+                <form id="addResultForm">
+                    <div class="form-group">
+                        <label>Match</label>
+                        <select name="match" id="matchSelect">
+                            <option value="">Sélectionner un match</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Score Zarsa</label>
+                        <input type="number" name="scoreHome" min="0" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Score Adversaire</label>
+                        <input type="number" name="scoreAway" min="0" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Buteurs (séparés par des virgules)</label>
+                        <textarea name="scorers" rows="3" placeholder="M. Dubois (2), F. Kante (1)"></textarea>
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-check"></i> Valider le Résultat
+                    </button>
+                </form>
+            </div>
+
+            <!-- Add Player Section -->
+            <div class="admin-section">
+                <h3><i class="fas fa-user-plus"></i> Ajouter un Joueur</h3>
+                <form id="addPlayerForm">
+                    <div class="form-group">
+                        <label>Nom Complet</label>
+                        <input type="text" name="playerName" placeholder="Prénom NOM" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Équipe</label>
+                        <select name="playerTeam">
+                            <option value="zarsa-a">Zarsa A</option>
+                            <option value="zarsa-b">Zarsa B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Poste</label>
+                        <select name="position">
+                            <option value="gardien">Gardien</option>
+                            <option value="defenseur">Défenseur</option>
+                            <option value="milieu">Milieu</option>
+                            <option value="attaquant">Attaquant</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Numéro</label>
+                        <input type="number" name="number" min="1" max="99" placeholder="10" required>
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-user-check"></i> Ajouter le Joueur
+                    </button>
+                </form>
+            </div>
+
+            <!-- Export/Import Data -->
+            <div class="admin-section">
+                <h3><i class="fas fa-download"></i> Gestion des Données</h3>
+                <button class="btn btn-secondary" onclick="exportData()" style="margin-bottom: 1rem;">
+                    <i class="fas fa-file-export"></i> Exporter JSON
+                </button>
+                <div class="form-group">
+                    <label>Importer des données</label>
+                    <input type="file" id="importFile" accept=".json" style="padding: 0.5rem;">
+                </div>
+                <button class="btn btn-secondary" onclick="importData()">
+                    <i class="fas fa-file-import"></i> Importer JSON
+                </button>
+            </div>
+
+            <!-- Edit Match Section -->
+            <div class="admin-section">
+                <h3><i class="fas fa-edit"></i> Modifier un Match</h3>
+                <form id="editMatchForm">
+                    <div class="form-group">
+                        <label>Sélectionner un match</label>
+                        <select name="matchId" id="editMatchSelect" onchange="loadMatchForEdit()">
+                            <option value="">Choisir un match...</option>
+                        </select>
+                    </div>
+                    <div id="editMatchFields" style="display: none;">
+                        <div class="form-group">
+                            <label>Adversaire</label>
+                            <input type="text" name="editOpponent" id="editOpponent">
+                        </div>
+                        <div class="form-group">
+                            <label>Date et Heure</label>
+                            <input type="datetime-local" name="editDatetime" id="editDatetime">
+                        </div>
+                        <div class="form-group">
+                            <label>Lieu</label>
+                            <select name="editLocation" id="editLocation">
+                                <option value="domicile">Domicile</option>
+                                <option value="exterieur">Extérieur</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Compétition</label>
+                            <select name="editCompetition" id="editCompetition">
+                                <option value="championnat">Championnat</option>
+                                <option value="coupe">Coupe</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> Enregistrer les modifications
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="deleteMatch()" style="margin-top: 0.5rem;">
+                            <i class="fas fa-trash"></i> Supprimer ce match
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Edit Player Section -->
+            <div class="admin-section">
+                <h3><i class="fas fa-user-edit"></i> Modifier un Joueur</h3>
+                <form id="editPlayerForm">
+                    <div class="form-group">
+                        <label>Sélectionner un joueur</label>
+                        <select name="playerId" id="editPlayerSelect" onchange="loadPlayerForEdit()">
+                            <option value="">Choisir un joueur...</option>
+                        </select>
+                    </div>
+                    <div id="editPlayerFields" style="display: none;">
+                        <div class="form-group">
+                            <label>Nom Complet</label>
+                            <input type="text" name="editPlayerName" id="editPlayerName">
+                        </div>
+                        <div class="form-group">
+                            <label>Équipe</label>
+                            <select name="editPlayerTeam" id="editPlayerTeam">
+                                <option value="zarsa-a">Zarsa A</option>
+                                <option value="zarsa-b">Zarsa B</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Poste</label>
+                            <select name="editPosition" id="editPosition">
+                                <option value="gardien">Gardien</option>
+                                <option value="defenseur">Défenseur</option>
+                                <option value="milieu">Milieu</option>
+                                <option value="attaquant">Attaquant</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Numéro</label>
+                            <input type="number" name="editNumber" id="editNumber" min="1" max="99">
+                        </div>
+                        <div class="form-group">
+                            <label>Buts marqués</label>
+                            <input type="number" name="editGoals" id="editGoals" min="0">
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> Enregistrer les modifications
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="deletePlayer()" style="margin-top: 0.5rem;">
+                            <i class="fas fa-trash"></i> Supprimer ce joueur
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Logout -->
+            <div class="admin-section">
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        // Mock Data Storage
+        let appData = {
+            matches: [
+                {
+                    id: 1,
+                    team: 'Zarsa A',
+                    opponent: 'US Blagnac',
+                    date: '2024-11-24T14:00',
+                    location: 'Extérieur',
+                    competition: 'Coupe',
+                    status: 'upcoming',
+                    scoreHome: null,
+                    scoreAway: null
+                },
+                {
+                    id: 2,
+                    team: 'Zarsa B',
+                    opponent: 'Vétérans Club',
+                    date: '2024-10-27T15:00',
+                    location: 'Domicile',
+                    competition: 'Championnat',
+                    status: 'finished',
+                    scoreHome: 2,
+                    scoreAway: 0,
+                    lineup: {
+                        zarsa: ['R. Lefebvre (1)', 'M. Durand (4)', 'L. Garcia (5)', 'J. Bernard (10)', 'P. Rousseau (8)'],
+                        opponent: ['A. Martin (1)', 'B. Lopez (3)', 'C. Fernandez (7)', 'D. Silva (9)', 'E. Costa (11)']
+                    },
+                    events: [
+                        { time: '12\'', type: 'goal', player: 'J. Bernard', team: 'Zarsa B' },
+                        { time: '45\'', type: 'yellow', player: 'P. Rousseau', team: 'Zarsa B' },
+                        { time: '68\'', type: 'goal', player: 'J. Bernard', team: 'Zarsa B' }
+                    ],
+                    comments: [
+                        { id: 1, author: 'Jean M.', text: 'Belle victoire ! Bravo les gars !', date: '2024-10-27T17:30', likes: 5 },
+                        { id: 2, author: 'Sophie L.', text: 'Bernard en forme olympique 🔥', date: '2024-10-27T18:15', likes: 3 }
+                    ]
+                },
+                {
+                    id: 3,
+                    team: 'Zarsa A',
+                    opponent: 'AS Port',
+                    date: '2024-11-10T15:30',
+                    location: 'Extérieur',
+                    competition: 'Championnat',
+                    status: 'upcoming',
+                    scoreHome: null,
+                    scoreAway: null
+                }
+            ],
+            players: [
+                { id: 1, name: 'M. Dubois', team: 'Zarsa A', position: 'Attaquant', number: 9, goals: 5 },
+                { id: 2, name: 'F. Kante', team: 'Zarsa A', position: 'Milieu', number: 7, goals: 3 },
+                { id: 3, name: 'L. Petit', team: 'Zarsa A', position: 'Ailier', number: 11, goals: 2 },
+                { id: 4, name: 'A. Martin', team: 'Zarsa A', position: 'Gardien', number: 1, goals: 0 },
+                { id: 5, name: 'J. Bernard', team: 'Zarsa B', position: 'Attaquant', number: 10, goals: 6 },
+                { id: 6, name: 'P. Rousseau', team: 'Zarsa B', position: 'Milieu offensif', number: 8, goals: 4 },
+                { id: 7, name: 'T. Moreau', team: 'Zarsa B', position: 'Ailier', number: 7, goals: 2 },
+                { id: 8, name: 'R. Lefebvre', team: 'Zarsa B', position: 'Gardien', number: 1, goals: 0 }
+            ],
+            user: null // Current logged user
+        };
+
+        // Auth state
+        let isAuthenticated = false;
+
+        // Check authentication
+        function checkAuthAndToggleAdmin() {
+            if (isAuthenticated) {
+                toggleAdmin();
+            } else {
+                openLoginModal();
+            }
+        }
+
+        // Login Modal
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const username = formData.get('username');
+            const password = formData.get('password');
+
+            // Simple mock authentication (in production, use real backend)
+            if (username === 'admin' && password === 'zarsa2024') {
+                isAuthenticated = true;
+                appData.user = { username: 'admin', role: 'admin' };
+                localStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('user', JSON.stringify(appData.user));
+                closeLoginModal();
+                toggleAdmin();
+                showNotification('Connexion réussie !', 'success');
+                e.target.reset();
+            } else {
+                showNotification('Identifiants incorrects', 'error');
+            }
+        });
+
+        // Logout
+        function logout() {
+            isAuthenticated = false;
+            appData.user = null;
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('user');
+            toggleAdmin();
+            showNotification('Déconnexion réussie', 'success');
+        }
+
+        // Load auth state
+        function loadAuthState() {
+            const auth = localStorage.getItem('isAuthenticated');
+            const user = localStorage.getItem('user');
+            if (auth === 'true' && user) {
+                isAuthenticated = true;
+                appData.user = JSON.parse(user);
+            }
+        }
+
+        // Match Details Modal
+        function openMatchDetails(matchId) {
+            const match = appData.matches.find(m => m.id === matchId);
+            if (!match) return;
+
+            const modalBody = document.getElementById('matchModalBody');
+            
+            let content = `
+                <div class="match-detail-score">
+                    <div class="team">
+                        <div class="team-logo" style="font-size: 4rem;">🛡️</div>
+                        <h3>${match.team}</h3>
+                        ${match.scoreHome !== null ? `<div class="score">${match.scoreHome}</div>` : ''}
+                    </div>
+                    <div class="vs">${match.scoreHome !== null ? '-' : 'VS'}</div>
+                    <div class="team">
+                        <div class="team-logo" style="font-size: 4rem;">⚔️</div>
+                        <h3>${match.opponent}</h3>
+                        ${match.scoreAway !== null ? `<div class="score">${match.scoreAway}</div>` : ''}
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary);">
+                    <i class="far fa-calendar"></i> ${new Date(match.date).toLocaleString('fr-FR')}
+                    <span style="margin: 0 1rem;">•</span>
+                    <i class="fas fa-map-marker-alt"></i> ${match.location}
+                    <span style="margin: 0 1rem;">•</span>
+                    <i class="fas fa-trophy"></i> ${match.competition}
+                </div>
+            `;
+
+            // Show lineup if match is finished
+            if (match.status === 'finished' && match.lineup) {
+                content += `
+                    <h3 style="margin-bottom: 1rem; color: var(--accent);"><i class="fas fa-users"></i> Compositions</h3>
+                    <div class="composition-grid">
+                        <div class="composition-team">
+                            <h4>${match.team}</h4>
+                            ${match.lineup.zarsa.map(player => `
+                                <div class="player-lineup">
+                                    <div class="player-number">${player.match(/\((\d+)\)/)[1]}</div>
+                                    <div>${player.replace(/\s*\(\d+\)/, '')}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="composition-team">
+                            <h4>${match.opponent}</h4>
+                            ${match.lineup.opponent.map(player => `
+                                <div class="player-lineup">
+                                    <div class="player-number">${player.match(/\((\d+)\)/)[1]}</div>
+                                    <div>${player.replace(/\s*\(\d+\)/, '')}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Show events if match is finished
+            if (match.status === 'finished' && match.events) {
+                content += `
+                    <h3 style="margin-bottom: 1rem; color: var(--accent);"><i class="fas fa-clock"></i> Événements du Match</h3>
+                    <div class="events-timeline">
+                        ${match.events.map(event => {
+                            const icon = event.type === 'goal' ? '⚽' : event.type === 'yellow' ? '🟨' : event.type === 'red' ? '🟥' : '🔄';
+                            return `
+                                <div class="event-item">
+                                    <div class="event-time">${event.time}</div>
+                                    <div class="event-icon">${icon}</div>
+                                    <div>
+                                        <strong>${event.player}</strong> (${event.team})
+                                        ${event.type === 'goal' ? 'But !' : event.type === 'yellow' ? 'Carton jaune' : event.type === 'red' ? 'Carton rouge' : 'Remplacement'}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            // Comments section
+            content += `
+                <h3 style="margin-bottom: 1rem; color: var(--accent);"><i class="fas fa-comments"></i> Commentaires</h3>
+                <div class="comments-section">
+                    <div class="comment-form">
+                        <textarea class="comment-input" id="newComment" placeholder="Ajoutez votre commentaire..."></textarea>
+                        <button class="btn" onclick="addComment(${matchId})">
+                            <i class="fas fa-paper-plane"></i> Publier
+                        </button>
+                    </div>
+                    <div id="commentsList">
+                        ${match.comments ? match.comments.map(comment => `
+                            <div class="comment-item" data-comment-id="${comment.id}">
+                                <div class="comment-header">
+                                    <span class="comment-author"><i class="fas fa-user-circle"></i> ${comment.author}</span>
+                                    <span class="comment-date">${new Date(comment.date).toLocaleString('fr-FR')}</span>
+                                </div>
+                                <div class="comment-text">${comment.text}</div>
+                                <div class="comment-actions">
+                                    <button class="comment-action ${comment.liked ? 'liked' : ''}" onclick="toggleLike(${matchId}, ${comment.id})">
+                                        <i class="fas fa-heart"></i>
+                                        <span>${comment.likes || 0}</span>
+                                    </button>
+                                    <button class="comment-action">
+                                        <i class="fas fa-reply"></i> Répondre
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('') : '<p style="color: var(--text-secondary); text-align: center;">Aucun commentaire pour le moment</p>'}
+                    </div>
+                </div>
+            `;
+
+            modalBody.innerHTML = content;
+            document.getElementById('matchModal').classList.add('active');
+        }
+
+        function closeMatchModal() {
+            document.getElementById('matchModal').classList.remove('active');
+        }
+
+        // Add Comment
+        function addComment(matchId) {
+            const commentText = document.getElementById('newComment').value.trim();
+            if (!commentText) {
+                showNotification('Veuillez entrer un commentaire', 'error');
+                return;
+            }
+
+            const match = appData.matches.find(m => m.id === matchId);
+            if (!match.comments) match.comments = [];
+
+            const newComment = {
+                id: match.comments.length + 1,
+                author: appData.user ? appData.user.username : 'Anonyme',
+                text: commentText,
+                date: new Date().toISOString(),
+                likes: 0
+            };
+
+            match.comments.push(newComment);
+            showNotification('Commentaire ajouté !', 'success');
+            openMatchDetails(matchId); // Refresh
+        }
+
+        // Toggle Like
+        function toggleLike(matchId, commentId) {
+            const match = appData.matches.find(m => m.id === matchId);
+            const comment = match.comments.find(c => c.id === commentId);
+            
+            if (comment.liked) {
+                comment.likes--;
+                comment.liked = false;
+            } else {
+                comment.likes++;
+                comment.liked = true;
+            }
+            
+            openMatchDetails(matchId); // Refresh
+        }
+
+        // Close modals on outside click
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        // Offline Detection
+        window.addEventListener('online', function() {
+            document.getElementById('offlineIndicator').classList.remove('show');
+            showNotification('Connexion rétablie', 'success');
+        });
+
+        window.addEventListener('offline', function() {
+            document.getElementById('offlineIndicator').classList.add('show');
+            showNotification('Mode hors ligne activé', 'info');
+        });
+
+        // Service Worker for PWA (offline mode)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Service worker would be registered here in production
+                console.log('PWA ready for service worker registration');
+            });
+        }
+
+        // Calendar
+        let currentMonth = 10; // November (0-indexed)
+        let currentYear = 2024;
+
+        function generateCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                              'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            
+            document.getElementById('calendarMonth').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Days of week
+            const days = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+            days.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'calendar-day';
+                dayHeader.style.fontWeight = '700';
+                dayHeader.style.background = 'var(--accent)';
+                dayHeader.textContent = day;
+                grid.appendChild(dayHeader);
+            });
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const startDay = firstDay === 0 ? 6 : firstDay - 1;
+            
+            // Empty cells
+            for (let i = 0; i < startDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                emptyDay.style.opacity = '0.3';
+                grid.appendChild(emptyDay);
+            }
+            
+            // Days with match indicators
+            const matchDays = [10, 24, 27]; // Mock match days
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                if (matchDays.includes(day)) {
+                    dayCell.classList.add('has-match');
+                }
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'calendar-day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+                
+                if (matchDays.includes(day)) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'calendar-day-indicator';
+                    dayCell.appendChild(indicator);
+                }
+                
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        // Charts
+        function initCharts() {
+            // Performance Chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Sept', 'Oct', 'Nov', 'Déc', 'Jan', 'Fév'],
+                    datasets: [{
+                        label: 'Zarsa A',
+                        data: [65, 70, 75, 80, 78, 85],
+                        borderColor: '#5B9BD5',
+                        backgroundColor: 'rgba(91, 155, 213, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Zarsa B',
+                        data: [60, 68, 72, 75, 80, 82],
+                        borderColor: '#00d9a3',
+                        backgroundColor: 'rgba(0, 217, 163, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#b8b8d4' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#b8b8d4' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+
+            // Comparison Chart
+            const compCtx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(compCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Victoires', 'Nuls', 'Défaites', 'Buts marqués', 'Buts encaissés'],
+                    datasets: [{
+                        label: 'Zarsa A',
+                        data: [9, 3, 3, 34, 18],
+                        backgroundColor: 'rgba(91, 155, 213, 0.8)'
+                    }, {
+                        label: 'Zarsa B',
+                        data: [4, 0, 1, 14, 6],
+                        backgroundColor: 'rgba(0, 217, 163, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#ffffff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#b8b8d4' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#b8b8d4' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Toggle Mobile Menu
+        function toggleMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.toggle('active');
+        }
+
+        // Toggle Admin Panel
+        function toggleAdmin() {
+            const adminPanel = document.getElementById('adminPanel');
+            adminPanel.classList.toggle('active');
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.querySelector('.theme-toggle i');
+            if (document.body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load theme preference
+        function loadTheme() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                const icon = document.querySelector('.theme-toggle i');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+
+        // Switch Tabs
+        function switchTab(tabId, button) {
+            // Get parent section
+            const section = button.closest('.team-section');
+            
+            // Hide all tab contents in this section
+            section.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Remove active class from all buttons in this section
+            section.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab and activate button
+            document.getElementById(tabId).style.display = 'block';
+            button.classList.add('active');
+        }
+
+        // Filter Matches
+        function filterMatches() {
+            const teamFilter = document.getElementById('filterTeam').value;
+            const competitionFilter = document.getElementById('filterCompetition').value;
+            const periodFilter = document.getElementById('filterPeriod').value;
+
+            const matches = document.querySelectorAll('.match-card');
+
+            matches.forEach(match => {
+                let show = true;
+
+                if (teamFilter !== 'all' && match.dataset.team !== teamFilter) {
+                    show = false;
+                }
+
+                if (competitionFilter !== 'all' && match.dataset.competition !== competitionFilter) {
+                    show = false;
+                }
+
+                if (periodFilter !== 'all' && match.dataset.status !== periodFilter) {
+                    show = false;
+                }
+
+                match.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        // Add Match Form Handler
+        document.getElementById('addMatchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            const newMatch = {
+                id: appData.matches.length + 1,
+                team: formData.get('team') === 'zarsa-a' ? 'Zarsa A' : 'Zarsa B',
+                opponent: formData.get('opponent'),
+                date: formData.get('datetime'),
+                location: formData.get('location') === 'domicile' ? 'Domicile' : 'Extérieur',
+                competition: formData.get('competition').charAt(0).toUpperCase() + formData.get('competition').slice(1),
+                status: 'upcoming',
+                scoreHome: null,
+                scoreAway: null
+            };
+
+            appData.matches.push(newMatch);
+            
+            showNotification('Match ajouté avec succès!', 'success');
+            e.target.reset();
+            updateMatchSelect();
+        });
+
+        // Add Result Form Handler
+        document.getElementById('addResultForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            const matchId = parseInt(formData.get('match'));
+            const match = appData.matches.find(m => m.id === matchId);
+            
+            if (match) {
+                match.scoreHome = parseInt(formData.get('scoreHome'));
+                match.scoreAway = parseInt(formData.get('scoreAway'));
+                match.status = 'finished';
+                
+                showNotification('Résultat enregistré avec succès!', 'success');
+                e.target.reset();
+            }
+        });
+
+        // Add Player Form Handler
+        document.getElementById('addPlayerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            const newPlayer = {
+                id: appData.players.length + 1,
+                name: formData.get('playerName'),
+                team: formData.get('playerTeam') === 'zarsa-a' ? 'Zarsa A' : 'Zarsa B',
+                position: formData.get('position').charAt(0).toUpperCase() + formData.get('position').slice(1),
+                number: parseInt(formData.get('number')),
+                goals: 0
+            };
+
+            appData.players.push(newPlayer);
+            
+            showNotification('Joueur ajouté avec succès!', 'success');
+            e.target.reset();
+        });
+
+        // Update Match Select
+        function updateMatchSelect() {
+            const select = document.getElementById('matchSelect');
+            const editSelect = document.getElementById('editMatchSelect');
+            
+            select.innerHTML = '<option value="">Sélectionner un match</option>';
+            editSelect.innerHTML = '<option value="">Choisir un match...</option>';
+            
+            appData.matches.filter(m => m.status === 'upcoming').forEach(match => {
+                const option = document.createElement('option');
+                option.value = match.id;
+                option.textContent = `${match.team} vs ${match.opponent} - ${new Date(match.date).toLocaleDateString('fr-FR')}`;
+                select.appendChild(option);
+            });
+
+            appData.matches.forEach(match => {
+                const option = document.createElement('option');
+                option.value = match.id;
+                option.textContent = `${match.team} vs ${match.opponent} - ${new Date(match.date).toLocaleDateString('fr-FR')}`;
+                editSelect.appendChild(option);
+            });
+        }
+
+        // Update Player Select
+        function updatePlayerSelect() {
+            const select = document.getElementById('editPlayerSelect');
+            select.innerHTML = '<option value="">Choisir un joueur...</option>';
+            
+            appData.players.forEach(player => {
+                const option = document.createElement('option');
+                option.value = player.id;
+                option.textContent = `${player.name} - ${player.team} (#${player.number})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Load Match for Edit
+        function loadMatchForEdit() {
+            const matchId = parseInt(document.getElementById('editMatchSelect').value);
+            if (!matchId) {
+                document.getElementById('editMatchFields').style.display = 'none';
+                return;
+            }
+
+            const match = appData.matches.find(m => m.id === matchId);
+            if (match) {
+                document.getElementById('editOpponent').value = match.opponent;
+                document.getElementById('editDatetime').value = match.date;
+                document.getElementById('editLocation').value = match.location.toLowerCase();
+                document.getElementById('editCompetition').value = match.competition.toLowerCase();
+                document.getElementById('editMatchFields').style.display = 'block';
+            }
+        }
+
+        // Load Player for Edit
+        function loadPlayerForEdit() {
+            const playerId = parseInt(document.getElementById('editPlayerSelect').value);
+            if (!playerId) {
+                document.getElementById('editPlayerFields').style.display = 'none';
+                return;
+            }
+
+            const player = appData.players.find(p => p.id === playerId);
+            if (player) {
+                document.getElementById('editPlayerName').value = player.name;
+                document.getElementById('editPlayerTeam').value = player.team === 'Zarsa A' ? 'zarsa-a' : 'zarsa-b';
+                document.getElementById('editPosition').value = player.position.toLowerCase();
+                document.getElementById('editNumber').value = player.number;
+                document.getElementById('editGoals').value = player.goals;
+                document.getElementById('editPlayerFields').style.display = 'block';
+            }
+        }
+
+        // Edit Match Form Handler
+        document.getElementById('editMatchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const matchId = parseInt(document.getElementById('editMatchSelect').value);
+            const match = appData.matches.find(m => m.id === matchId);
+
+            if (match) {
+                match.opponent = document.getElementById('editOpponent').value;
+                match.date = document.getElementById('editDatetime').value;
+                match.location = document.getElementById('editLocation').value === 'domicile' ? 'Domicile' : 'Extérieur';
+                match.competition = document.getElementById('editCompetition').value.charAt(0).toUpperCase() + document.getElementById('editCompetition').value.slice(1);
+
+                showNotification('Match modifié avec succès !', 'success');
+                updateMatchSelect();
+                document.getElementById('editMatchFields').style.display = 'none';
+                document.getElementById('editMatchSelect').value = '';
+            }
+        });
+
+        // Edit Player Form Handler
+        document.getElementById('editPlayerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const playerId = parseInt(document.getElementById('editPlayerSelect').value);
+            const player = appData.players.find(p => p.id === playerId);
+
+            if (player) {
+                player.name = document.getElementById('editPlayerName').value;
+                player.team = document.getElementById('editPlayerTeam').value === 'zarsa-a' ? 'Zarsa A' : 'Zarsa B';
+                player.position = document.getElementById('editPosition').value.charAt(0).toUpperCase() + document.getElementById('editPosition').value.slice(1);
+                player.number = parseInt(document.getElementById('editNumber').value);
+                player.goals = parseInt(document.getElementById('editGoals').value);
+
+                showNotification('Joueur modifié avec succès !', 'success');
+                updatePlayerSelect();
+                document.getElementById('editPlayerFields').style.display = 'none';
+                document.getElementById('editPlayerSelect').value = '';
+            }
+        });
+
+        // Delete Match
+        function deleteMatch() {
+            const matchId = parseInt(document.getElementById('editMatchSelect').value);
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce match ?')) {
+                appData.matches = appData.matches.filter(m => m.id !== matchId);
+                showNotification('Match supprimé avec succès !', 'success');
+                updateMatchSelect();
+                document.getElementById('editMatchFields').style.display = 'none';
+                document.getElementById('editMatchSelect').value = '';
+            }
+        }
+
+        // Delete Player
+        function deletePlayer() {
+            const playerId = parseInt(document.getElementById('editPlayerSelect').value);
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce joueur ?')) {
+                appData.players = appData.players.filter(p => p.id !== playerId);
+                showNotification('Joueur supprimé avec succès !', 'success');
+                updatePlayerSelect();
+                document.getElementById('editPlayerFields').style.display = 'none';
+                document.getElementById('editPlayerSelect').value = '';
+            }
+        }
+
+        // Export Data
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `zarsa-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showNotification('Données exportées avec succès!', 'success');
+        }
+
+        // Import Data
+        function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Veuillez sélectionner un fichier', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    appData = importedData;
+                    showNotification('Données importées avec succès!', 'success');
+                    updateMatchSelect();
+                } catch (error) {
+                    showNotification('Erreur lors de l\'import des données', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#00d9a3' : type === 'error' ? '#ff6b6b' : '#5B9BD5'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            `;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#accueil') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                
+                // Close mobile menu if open
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+
+        // Auto-close admin panel on outside click
+        document.addEventListener('click', function(e) {
+            const adminPanel = document.getElementById('adminPanel');
+            const adminToggle = document.querySelector('.admin-toggle');
+            
+            if (adminPanel.classList.contains('active') && 
+                !adminPanel.contains(e.target) && 
+                !adminToggle.contains(e.target)) {
+                adminPanel.classList.remove('active');
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Zarsa Football App initialized');
+            
+            // Load saved states
+            loadTheme();
+            loadAuthState();
+            
+            generateCalendar();
+            initCharts();
+            updateMatchSelect();
+            updatePlayerSelect();
+            
+            // Add fade-in animation to elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.team-section, .stat-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Display auth status
+            if (isAuthenticated) {
+                console.log('✅ Utilisateur connecté:', appData.user.username);
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98b05967da518c76',t:'MTc1OTg3MTA0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

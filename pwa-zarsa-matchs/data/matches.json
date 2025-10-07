@@ -1,0 +1,72 @@
+[
+  {
+    "equipe": "Zarsa A",
+    "competition": "Championnat",
+    "date": "2024-11-03T15:00:00Z",
+    "adverse": "FC Riviera",
+    "domicile": true,
+    "statut": "Terminé",
+    "score_zarsa": 3,
+    "score_adverse": 1
+  },
+  {
+    "equipe": "Zarsa A",
+    "competition": "Championnat",
+    "date": "2024-11-10T15:00:00Z",
+    "adverse": "AS Port",
+    "domicile": false,
+    "statut": "Terminé",
+    "score_zarsa": 1,
+    "score_adverse": 1
+  },
+  {
+    "equipe": "Zarsa A",
+    "competition": "Coupe",
+    "date": "2024-11-24T14:00:00Z",
+    "adverse": "US Blagnac",
+    "domicile": true,
+    "statut": "À Venir",
+    "score_zarsa": null,
+    "score_adverse": null
+  },
+  {
+    "equipe": "Zarsa A",
+    "competition": "Championnat",
+    "date": "2024-12-01T15:00:00Z",
+    "adverse": "Olympique V",
+    "domicile": false,
+    "statut": "À Venir",
+    "score_zarsa": null,
+    "score_adverse": null
+  },
+  {
+    "equipe": "Zarsa B",
+    "competition": "Championnat V.",
+    "date": "2024-10-27T10:30:00Z",
+    "adverse": "Vétérans Club",
+    "domicile": true,
+    "statut": "Terminé",
+    "score_zarsa": 2,
+    "score_adverse": 0
+  },
+  {
+    "equipe": "Zarsa B",
+    "competition": "Coupe V.",
+    "date": "2024-11-17T10:30:00Z",
+    "adverse": "Olympique V",
+    "domicile": false,
+    "statut": "À Venir",
+    "score_zarsa": null,
+    "score_adverse": null
+  },
+  {
+    "equipe": "Zarsa B",
+    "competition": "Championnat V.",
+    "date": "2024-12-08T10:30:00Z",
+    "adverse": "FC Riviera",
+    "domicile": true,
+    "statut": "À Venir",
+    "score_zarsa": null,
+    "score_adverse": null
+  }
+]

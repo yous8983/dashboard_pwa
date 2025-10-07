@@ -1,0 +1,268 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #CC0000;
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+main {
+    padding: 10px;
+    max-width: 800px;
+    margin: auto;
+}
+
+h2, h3 {
+    color: #333;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+    margin-top: 25px;
+}
+
+/* --- Section Prochains Matchs --- */
+.prochains-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.prochains-equipe {
+    flex: 1 1 300px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+.prochains-equipe h4 {
+    margin-top: 0;
+    color: #CC0000;
+}
+
+.match-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    background-color: #f9f9f9;
+}
+.match-card.highlight {
+    border-left: 5px solid #CC0000;
+    background-color: #fff3f3;
+}
+
+.match-info {
+    flex-grow: 1;
+}
+
+.match-info .team {
+    font-weight: bold;
+    display: block;
+    color: #CC0000;
+    font-size: 0.9em;
+}
+
+.match-info .date, .match-info .adverse {
+    display: block;
+    font-size: 0.8em;
+}
+
+.match-statut {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.score {
+    font-size: 1em;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.result.victoire { color: green; font-weight: bold; }
+.result.défaite { color: #CC0000; font-weight: bold; }
+.result.nul { color: orange; font-weight: bold; }
+
+
+/* --- Styles Bilan Statistiques (stats-summary) --- */
+.stats-summary {
+    display: flex;
+    /* Ajusté pour mieux gérer la timeline et les stats */
+    justify-content: flex-start; 
+    flex-wrap: wrap;
+    gap: 15px; /* Espace entre les éléments */
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.stats-summary p {
+    margin: 5px 0; /* Réduire la marge verticale */
+    font-size: 0.9em;
+    font-weight: 500;
+}
+.stats-summary p strong {
+    color: #CC0000;
+}
+
+/* --- TIMELINE D'ÉVOLUTION --- */
+.timeline-result {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    margin-right: 2px;
+}
+.timeline-result.result-v { background-color: green; }
+.timeline-result.result-n { background-color: orange; }
+.timeline-result.result-d { background-color: #CC0000; }
+
+/* --- Buteurs et Stats Complémentaires --- */
+.stats-complementaires {
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+.buteurs-section h4 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.1em;
+    border-bottom: none;
+}
+.top-scorers {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.top-scorers li {
+    padding: 3px 0;
+    border-bottom: 1px dotted #ccc;
+    font-size: 0.9em;
+}
+
+/* --- Classement B Vétérans (Nouveau) --- */
+.stats-veterans {
+    background-color: #e6e6e6;
+    margin-top: 25px;
+    padding: 15px;
+    border: 1px solid #ccc;
+}
+.stats-veterans h4 {
+    color: #555;
+    font-size: 1.1em;
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* --- Styles Nouveaux (Navigation Compétitions) --- */
+.competitions-nav {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.competitions-nav button {
+    background-color: transparent;
+    color: #555;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: border-bottom 0.2s, color 0.2s;
+}
+
+.competitions-nav button.active {
+    color: #CC0000;
+    border-bottom: 3px solid #CC0000;
+}
+
+/* --- Styles Filtres Statut --- */
+.filtres-a, .filtres-b {
+    margin: 10px 0 20px 0;
+}
+.filtres-a button, .filtres-b button {
+    background-color: #fff;
+    color: #CC0000;
+    border: 1px solid #CC0000;
+    padding: 6px 12px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.filtres-a button.active, .filtres-b button.active {
+    background-color: #CC0000;
+    color: white;
+}
+#refresh-data {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+/* --- Section Classement (Responsive) --- */
+#stats-zarsa-a table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.8em;
+    overflow-x: auto;
+    display: block;
+}
+
+#stats-zarsa-a th, #stats-zarsa-a td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: center;
+}
+
+#stats-zarsa-a th {
+    background-color: #CC0000;
+    color: white;
+    font-weight: normal;
+    font-size: 0.9em;
+}
+
+#stats-zarsa-a .highlight-team {
+    background-color: #ffcdd2;
+    font-weight: bold;
+}
+
+.stat-Pts {
+    background-color: #ff9999;
+}
+
+@media (min-width: 600px) {
+    #stats-zarsa-a table {
+        display: table;
+        font-size: 0.9em;
+    }
+}
