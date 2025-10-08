@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cymath — Terminale C Maths (Prototype)</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Prototype Cymath — Terminale C Mathématiques. Freemium / Premium, Dashboards Admin/Prof/Étudiant, Bac blanc, Paiements simulés." />
+  <meta name="theme-color" content="#1E3A8A" />
+
+  <style>
+    html,body,#app { height:100%; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    .locked { filter: grayscale(10%); opacity: 0.98; }
+    /* simple scroll style for desktop */
+    ::-webkit-scrollbar { width:8px; height:8px; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius:999px; }
+  </style>
+</head>
+<body class="bg-[#F8FAFF] text-gray-800 antialiased">
+
+  <div id="app" class="min-h-screen max-w-3xl mx-auto flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur px-4 py-3 border-b flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <!-- Cymath SVG logo -->
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-[#1E3A8A] to-[#3B82F6] flex items-center justify-center">
+          <svg width="38" height="38" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#1E3A8A"/>
+                <stop offset="1" stop-color="#3B82F6"/>
+              </linearGradient>
+            </defs>
+            <rect rx="16" width="100" height="100" fill="url(#g1)"/>
+            <text x="50" y="58" font-family="Verdana" font-size="44" fill="white" text-anchor="middle" font-weight="700">C</text>
+          </svg>
+        </div>
+        <div>
+          <div class="text-sm font-semibold">Cymath</div>
+          <div class="text-xs text-gray-500">Terminale C — Mathématiques</div>
+        </div>
+      </div>
+
+      <!-- search + role switcher -->
+      <div class="flex-1 max-w-xl">
+        <div class="relative">
+          <input id="global-search" type="search" placeholder="Rechercher un chapitre, exercice, bac blanc..." class="w-full px-10 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]" />
+          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <select id="role-switch" class="text-sm px-2 py-1 border rounded-md bg-white">
+          <option value="student">Élève</option>
+          <option value="teacher">Professeur</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button id="btn-profile-mini" class="w-9 h-9 rounded-full bg-gray-200"></button>
+      </div>
+    </header>
+
+    <!-- Main SPA area -->
+    <main class="flex-1 px-4 py-4 safe-bottom overflow-y-auto">
+      <!-- HOME -->
+      <section id="screen-home" class="space-y-4">
+        <div class="bg-white rounded-2xl p-4 border shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs text-gray-500">Bonjour,</div>
+              <div id="home-username" class="text-lg font-semibold">Étudiant(e)</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs text-gray-500">Statut</div>
+              <div id="home-sub-status" class="text-sm font-semibold text-[#1E3A8A]">Freemium</div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+              <div id="home-progress" class="h-2 rounded-full" style="width:20%; background:linear-gradient(90deg,#1E3A8A,#3B82F6)"></div>
+            </div>
+            <div class="mt-2 text-xs text-gray-500">Progression globale: <span id="home-progress-num">20%</span></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button data-nav="courses" class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#1E3A8A]" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5a2 2 0 012-2h10a2 2 0 012 2v2H4V5zM4 9h16v8a2 2 0 01-2 2H6a2 2 0 01-2-2V9z"/></svg>
+            <div class="text-left"><div class="text-sm font-semibold">Cours</div><div class="text-xs text-gray-500">Programme Terminale C</div></div>
+          </button>
+
+          <button data-nav="exercises" class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#1E3A8A]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 3.8L18 7l-3 2.8L15.8 13 12 11.3 8.2 13 9 9.8 6 7l4.1-1.2L12 2z"/></svg>
+            <div class="text-left"><div class="text-sm font-semibold">Exercices</div><div class="text-xs text-gray-500">Quiz auto-corrigés</div></div>
+          </button>
+        </div>
+
+        <!-- Preview chapters -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-semibold">Chapitres (aperçu)</h3>
+            <div class="flex items-center gap-2">
+              <button class="text-xs text-[#1E3A8A]" data-nav="courses">Voir tout</button>
+              <button id="btn-bac-cta" class="text-xs bg-[#1E3A8A] text-white px-3 py-1 rounded-md">Bac blanc</button>
+            </div>
+          </div>
+          <div id="courses-preview" class="space-y-3"></div>
+        </div>
+
+        <!-- Role-specific quick panels -->
+        <div id="role-quick-panel"></div>
+      </section>
+
+      <!-- COURSES -->
+      <section id="screen-courses" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Cours — Terminale C (Mathématiques)</h2>
+          <div>
+            <button class="text-xs text-gray-500 mr-2" data-nav="home">Retour</button>
+            <button id="btn-new-chapter" class="text-xs bg-[#3B82F6] text-white px-3 py-1 rounded-md hidden">Nouveau chapitre</button>
+          </div>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto pb-2">
+          <button class="px-3 py-1 rounded-full text-xs bg-[#1E3A8A] text-white">Tous</button>
+          <button class="px-3 py-1 rounded-full text-xs bg-gray-100">Analyse</button>
+          <button class="px-3 py-1 rounded-full text-xs bg-gray-100">Algèbre</button>
+          <button class="px-3 py-1 rounded-full text-xs bg-gray-100">Géométrie</button>
+          <button class="px-3 py-1 rounded-full text-xs bg-gray-100">Probabilités</button>
+        </div>
+
+        <div id="all-courses" class="space-y-3"></div>
+      </section>
+
+      <!-- EXERCISES & QUIZ -->
+      <section id="screen-exercises" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Exercices & Quiz</h2>
+          <div>
+            <button class="text-xs text-gray-500 mr-2" data-nav="home">Accueil</button>
+            <button id="btn-start-quiz" class="text-xs bg-[#1E3A8A] text-white px-3 py-1 rounded-md">Lancer un quiz</button>
+          </div>
+        </div>
+
+        <div id="exercises-list" class="space-y-3"></div>
+
+        <div id="quiz-container" class="bg-white rounded-2xl p-4 border shadow-sm hidden"></div>
+      </section>
+
+      <!-- BAC BLANC -->
+      <section id="screen-bac" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Bac Blanc — Simulation</h2>
+          <button class="text-xs text-gray-500" data-nav="home">Annuler</button>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border shadow-sm">
+          <div class="mb-3 text-sm font-semibold">Lancer une simulation de bac blanc</div>
+          <div class="text-xs text-gray-500 mb-3">Sélectionne la durée et le nombre de questions pour simuler les conditions d'examen.</div>
+
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="text-xs text-gray-600">Durée (minutes)</label>
+              <select id="bac-duration" class="w-full mt-1 px-3 py-2 border rounded-md text-sm">
+                <option value="120">120</option>
+                <option value="180">180</option>
+                <option value="240">240</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-gray-600">Nombre de questions</label>
+              <select id="bac-questions-count" class="w-full mt-1 px-3 py-2 border rounded-md text-sm">
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button id="btn-start-bac" class="px-4 py-2 bg-[#1E3A8A] text-white rounded-md">Démarrer le Bac Blanc</button>
+            <button id="btn-bac-load-sample" class="px-4 py-2 border rounded-md text-sm">Charger exemple</button>
+          </div>
+        </div>
+
+        <div id="bac-run-container" class="hidden bg-white rounded-2xl p-4 border shadow-sm">
+          <!-- runtime area (timer, questions, submit) -->
+        </div>
+      </section>
+
+      <!-- SUBSCRIBE -->
+      <section id="screen-subscribe" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">S'abonner / Paiement</h2>
+          <button class="text-xs text-gray-500" data-nav="home">Annuler</button>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border shadow-sm space-y-3">
+          <div class="text-sm font-semibold">Choisir un plan</div>
+          <div class="grid grid-cols-1 gap-3">
+            <div class="p-3 border rounded-lg">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-semibold">Mensuel</div>
+                  <div class="text-xs text-gray-500">Accès complet — renouvellement automatique</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-bold">2000 MRU</div>
+                  <div class="text-xs text-gray-500">/ mois</div>
+                </div>
+              </div>
+              <div class="mt-3 flex gap-2">
+                <button class="px-3 py-1 bg-[#1E3A8A] text-white rounded-md subscribe-btn" data-plan="monthly">Choisir</button>
+                <button class="px-3 py-1 border rounded-md promo-btn">Utiliser un code promo</button>
+              </div>
+            </div>
+
+            <div class="p-3 border rounded-lg">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="font-semibold">Annuel</div>
+                  <div class="text-xs text-gray-500">Meilleur prix — 1 an</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-bold">20000 MRU</div>
+                  <div class="text-xs text-gray-500">/ an</div>
+                </div>
+              </div>
+              <div class="mt-3 flex gap-2">
+                <button class="px-3 py-1 bg-[#1E3A8A] text-white rounded-md subscribe-btn" data-plan="yearly">Choisir</button>
+                <button class="px-3 py-1 border rounded-md promo-btn">Utiliser un code promo</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-sm font-semibold">Méthodes de paiement (simulation)</div>
+          <div class="mt-2 grid grid-cols-2 gap-2">
+            <button id="pay-bankily" class="py-2 rounded-md border">Bankily</button>
+            <button id="pay-masrvi" class="py-2 rounded-md border">Masrvi</button>
+          </div>
+
+          <div id="promo-section" class="hidden">
+            <div class="mt-3 text-sm">Entrer le code promotionnel</div>
+            <div class="mt-2 flex gap-2">
+              <input id="promo-code" class="flex-1 px-3 py-2 border rounded-md text-sm" placeholder="Code promo (ex: MAURI50)" />
+              <button id="apply-promo" class="px-3 py-2 bg-[#1E3A8A] text-white rounded-md">Appliquer</button>
+            </div>
+            <div id="promo-feedback" class="text-xs text-green-600 mt-2"></div>
+          </div>
+
+          <div class="text-xs text-gray-500">Remarque: Paiements simulés — intégration réelle à implémenter côté backend / PSP local.</div>
+        </div>
+      </section>
+
+      <!-- DASHBOARDS -->
+      <section id="screen-student-dashboard" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Tableau de bord — Élève</h2>
+          <button class="text-xs text-gray-500" data-nav="home">Accueil</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white rounded-2xl p-4 border shadow-sm">
+            <div class="text-xs text-gray-500">Progression</div>
+            <div class="text-xl font-bold text-[#1E3A8A]" id="dash-stud-progress">20%</div>
+            <div class="text-xs text-gray-500 mt-2">Sessions complétées: <span id="dash-stud-sessions">0</span></div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 border shadow-sm">
+            <div class="text-xs text-gray-500">Dernier bac blanc</div>
+            <div id="dash-stud-last-bac" class="text-lg font-semibold">Aucun</div>
+            <div class="text-xs text-gray-500 mt-2">Historique & recommandations disponibles</div>
+          </div>
+        </div>
+
+        <div id="dash-stud-history" class="space-y-3"></div>
+      </section>
+
+      <section id="screen-teacher-dashboard" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Tableau de bord — Professeur</h2>
+          <div>
+            <button id="btn-create-quiz" class="text-xs bg-[#3B82F6] text-white px-3 py-1 rounded-md">Créer Quiz</button>
+            <button class="text-xs text-gray-500 ml-2" data-nav="home">Accueil</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border shadow-sm">
+          <div class="text-sm font-semibold">Gérer contenus</div>
+          <div class="mt-2 text-xs text-gray-500">Liste de vos chapitres & quiz (mock)</div>
+          <div id="dash-teacher-contents" class="mt-3 space-y-2"></div>
+        </div>
+      </section>
+
+      <section id="screen-admin-dashboard" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Tableau de bord — Admin</h2>
+          <button class="text-xs text-gray-500" data-nav="home">Accueil</button>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="bg-white rounded-2xl p-4 border shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold">Utilisateurs</div>
+                <div class="text-xs text-gray-500">Élèves: <span id="admin-count-students">0</span> — Profs: <span id="admin-count-teachers">0</span></div>
+              </div>
+              <div>
+                <button id="btn-manage-users" class="px-3 py-1 rounded-md border text-xs">Gérer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 border shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold">Paiements</div>
+                <div class="text-xs text-gray-500">Historique (mock)</div>
+              </div>
+              <div><button id="btn-view-payments" class="px-3 py-1 rounded-md border text-xs">Voir</button></div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-4 border shadow-sm">
+            <div class="text-sm font-semibold">Contenus</div>
+            <div class="text-xs text-gray-500 mt-1">Créer / approuver contenu publié</div>
+            <div id="admin-contents" class="mt-3 space-y-2"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom nav -->
+    <nav class="bg-white border-t">
+      <div class="px-4 py-2 flex items-center justify-between max-w-3xl mx-auto">
+        <button class="flex-1 text-center py-2" data-nav="home">
+          <div class="mx-auto w-6"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto text-[#1E3A8A]" viewBox="0 0 24 24" fill="currentColor"><path d="M3 11l9-7 9 7v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8z"/></svg></div>
+          <div class="text-xs">Accueil</div>
+        </button>
+        <button class="flex-1 text-center py-2" data-nav="courses">
+          <div class="mx-auto w-6"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5a2 2 0 012-2h10a2 2 0 012 2v2H4V5zM4 9h16v8a2 2 0 01-2 2H6a2 2 0 01-2-2V9z"/></svg></div>
+          <div class="text-xs">Cours</div>
+        </button>
+        <button class="flex-1 text-center py-2" data-nav="exercises">
+          <div class="mx-auto w-6"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 3.8L18 7l-3 2.8L15.8 13 12 11.3 8.2 13 9 9.8 6 7l4.1-1.2L12 2z"/><path d="M2 20h20v2H2z"/></svg></div>
+          <div class="text-xs">Exos</div>
+        </button>
+        <button class="flex-1 text-center py-2" data-nav="bac">
+          <div class="mx-auto w-6"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l9 4.5v5.5a6 6 0 01-6 6H9a6 6 0 01-6-6V6.5L12 2z"/></svg></div>
+          <div class="text-xs">Bac blanc</div>
+        </button>
+        <button class="flex-1 text-center py-2" data-nav="subscribe">
+          <div class="mx-auto w-6"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 00-5 5v2H5a2 2 0 00-2 2v7h18v-7a2 2 0 00-2-2h-2V7a5 5 0 00-5-5z"/></svg></div>
+          <div class="text-xs">S'abonner</div>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- App logic -->
+  <script>
+    /*******************************************
+     * Mock data - Programme Terminale C (Maths)
+     *******************************************/
+    const MOCK = {
+      chapters: [
+        { id:'a1', title:'Limites & Continuité', topic:'Analyse', access:'free', excerpt:'Notions de limite, continuité, première approche.' },
+        { id:'a2', title:'Dérivation & Applications', topic:'Analyse', access:'premium', excerpt:'Règles de dérivation, optimisation.' },
+        { id:'a3', title:'Intégration', topic:'Analyse', access:'premium', excerpt:'Primitives et techniques d’intégration.' },
+        { id:'alg1', title:'Suites numériques', topic:'Algèbre', access:'free', excerpt:'Convergence, suites arithmétique/géométrique.' },
+        { id:'alg2', title:'Matrices & Déterminants', topic:'Algèbre', access:'premium', excerpt:'Opérations, inverse, rang.' },
+        { id:'g1', title:'Vecteurs & Repères', topic:'Géométrie', access:'free', excerpt:'Produit scalaire, vecteurs dans l’espace.' },
+        { id:'p1', title:'Probabilités de base', topic:'Probabilités', access:'free', excerpt:'Événements, lois simples.' },
+      ],
+      quizzes: [
+        { id:'q_a1', title:'Quiz: Limites (débutant)', chapterId:'a1', access:'free', questions:[
+          { id:'q1', text:'Limite de sin(x)/x quand x→0 ?', choices:['0','1','∞','-1'], answerIndex:1 }
+        ]},
+        { id:'q_a2', title:'Quiz: Dérivation (avancé)', chapterId:'a2', access:'premium', questions:[
+          { id:'q2', text:'Dérivée de x^3 ?', choices:['2x','3x^2','x^3','1'], answerIndex:1 }
+        ]}
+      ],
+      // Simple user lists (mock)
+      users: { students: 120, teachers: 8, admins: 1 }
+    };
+
+    /*******************************************
+     * App state stored in localStorage
+     *******************************************/
+    const KEY = 'cymath_state_v1';
+    const defaultState = {
+      currentRole: 'student', // student | teacher | admin
+      user: { name: 'Étudiant(e) Cymath', email: 'etudiant@cymath.test' },
+      progress: 20,
+      sessions: 0,
+      history: [],
+      subscription: { tier:'free', plan:null, expiresAt:null, promoUsed:null }
+    };
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const s = JSON.parse(localStorage.getItem(KEY));
+        if (!s) { localStorage.setItem(KEY, JSON.stringify(defaultState)); return JSON.parse(JSON.stringify(defaultState)); }
+        return s;
+      } catch(e) { localStorage.setItem(KEY, JSON.stringify(defaultState)); return JSON.parse(JSON.stringify(defaultState)); }
+    }
+    function saveState() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+    /*******************************************
+     * Navigation & role switching
+     *******************************************/
+    function showScreen(name) {
+      document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+      const el = document.getElementById('screen-' + name);
+      if (el) el.classList.remove('hidden');
+      renderCommon();
+    }
+
+    // bottom nav & header nav wiring
+    document.querySelectorAll('[data-nav]').forEach(btn => btn.addEventListener('click', () => {
+      const dest = btn.getAttribute('data-nav');
+      if (dest) showScreen(dest);
+    }));
+
+    // role switcher
+    const roleSelect = document.getElementById('role-switch');
+    roleSelect.value = state.currentRole;
+    roleSelect.addEventListener('change', () => {
+      state.currentRole = roleSelect.value;
+      saveState();
+      renderCommon();
+      // show role dashboard automatically
+      if (state.currentRole === 'student') showScreen('student-dashboard');
+      if (state.currentRole === 'teacher') showScreen('teacher-dashboard');
+      if (state.currentRole === 'admin') showScreen('admin-dashboard');
+    });
+
+    // profile mini
+    document.getElementById('btn-profile-mini').addEventListener('click', () => {
+      showScreen('student-dashboard');
+      state.currentRole = 'student';
+      roleSelect.value = 'student';
+      saveState();
+    });
+
+    // global search
+    document.getElementById('global-search').addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) { renderCoursesPreview(); renderAllCourses(); renderExercisesList(); return; }
+      // simple filter over chapters and quizzes
+      const chMatches = MOCK.chapters.filter(c => (c.title + ' ' + c.excerpt + ' ' + c.topic).toLowerCase().includes(q));
+      const qMatches = MOCK.quizzes.filter(x => (x.title).toLowerCase().includes(q));
+      renderSearchResults(chMatches, qMatches, q);
+    });
+
+    function renderSearchResults(chapters, quizzes, q) {
+      const cp = document.getElementById('courses-preview');
+      cp.innerHTML = `<div class="text-xs text-gray-500">Résultats pour "<span class="font-semibold">${q}</span>"</div>`;
+      if (!chapters.length && !quizzes.length) { cp.innerHTML += '<div class="mt-2 text-xs text-gray-400">Aucun résultat</div>'; return; }
+      chapters.slice(0,5).forEach(c => cp.appendChild(createChapterCard(c)));
+      quizzes.slice(0,5).forEach(qs => cp.appendChild(createQuizCard(qs)));
+    }
+
+    /*******************************************
+     * Renderers - common
+     *******************************************/
+    function renderCommon() {
+      document.getElementById('home-username').textContent = state.user.name;
+      document.getElementById('home-progress-num').textContent = state.progress + '%';
+      document.getElementById('home-progress').style.width = state.progress + '%';
+      document.getElementById('home-sub-status').textContent = state.subscription.tier === 'premium' ? 'Premium' : 'Freemium';
+      // role quick panel
+      const rp = document.getElementById('role-quick-panel');
+      rp.innerHTML = '';
+      if (state.currentRole === 'student') {
+        rp.innerHTML = `<div class="bg-white rounded-2xl p-3 border shadow-sm text-sm">Bienvenue Élève — Accédez aux bac blancs et suivez votre progression.</div>`;
+      } else if (state.currentRole === 'teacher') {
+        rp.innerHTML = `<div class="bg-white rounded-2xl p-3 border shadow-sm text-sm">Bienvenue Prof — Gérez vos chapitres et publiez des bac blancs.</div>`;
+      } else {
+        rp.innerHTML = `<div class="bg-white rounded-2xl p-3 border shadow-sm text-sm">Bienvenue Admin — Supervisez utilisateurs, paiements et contenus.</div>`;
+      }
+
+      // show/hide teacher-only buttons
+      document.getElementById('btn-new-chapter').classList.toggle('hidden', state.currentRole !== 'teacher');
+      document.getElementById('btn-create-quiz').classList.toggle('hidden', state.currentRole !== 'teacher');
+
+      // update dashboards counts
+      document.getElementById('admin-count-students').textContent = MOCK.users.students;
+      document.getElementById('admin-count-teachers').textContent = MOCK.users.teachers;
+      document.getElementById('dash-stud-progress').textContent = state.progress + '%';
+      document.getElementById('dash-stud-sessions').textContent = state.sessions;
+      document.getElementById('dash-stud-last-bac').textContent = (state.history.length ? state.history[state.history.length-1].title + ' — ' + state.history[state.history.length-1].score + '/' + state.history[state.history.length-1].total : 'Aucun');
+
+      // fill admin/teacher content lists
+      const tc = document.getElementById('dash-teacher-contents'); tc.innerHTML = '';
+      MOCK.chapters.forEach(c => { const el = document.createElement('div'); el.className='text-sm p-2 border rounded-md'; el.textContent = c.title + ' ('+c.access+')'; tc.appendChild(el); });
+      const ac = document.getElementById('admin-contents'); ac.innerHTML = ''; MOCK.chapters.forEach(c=> { const el = document.createElement('div'); el.className='text-sm p-2 border rounded-md'; el.textContent = c.title + ' — ' + c.topic; ac.appendChild(el); });
+    }
+
+    /*******************************************
+     * Chapters & course rendering
+     *******************************************/
+    function createChapterCard(c) {
+      const locked = (c.access === 'premium') && !isPremiumActive();
+      const card = document.createElement('div');
+      card.className = 'bg-white p-3 rounded-xl border flex items-start gap-3 shadow-sm ' + (locked ? 'locked' : '');
+      card.innerHTML = `
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-tr from-[#1E3A8A] to-[#3B82F6] flex items-center justify-center text-white font-semibold">${c.topic[0]}</div>
+        <div class="flex-1">
+          <div class="font-semibold text-sm">${c.title}</div>
+          <div class="text-xs text-gray-500 mt-1">${c.excerpt}</div>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+          <div class="text-xs ${c.access==='premium' ? 'text-yellow-600' : 'text-gray-500'}">${c.access.toUpperCase()}</div>
+          <button class="text-xs open-chapter" data-id="${c.id}">${locked ? 'Voir offre' : 'Ouvrir'}</button>
+        </div>
+      `;
+      card.querySelectorAll('.open-chapter').forEach(b => b.addEventListener('click', () => openChapter(c.id)));
+      return card;
+    }
+
+    function createQuizCard(q) {
+      const locked = (q.access === 'premium') && !isPremiumActive();
+      const card = document.createElement('div');
+      card.className = 'bg-white p-3 rounded-xl border flex items-start gap-3 shadow-sm ' + (locked ? 'locked' : '');
+      card.innerHTML = `
+        <div class="w-12 h-12 rounded-lg bg-[#1E3A8A] text-white flex items-center justify-center font-semibold">Q</div>
+        <div class="flex-1">
+          <div class="font-semibold text-sm">${q.title}</div>
+          <div class="text-xs text-gray-500 mt-1">Chapitre: ${q.chapterId}</div>
+        </div>
+        <div><button class="text-xs start-quiz" data-id="${q.id}">${locked ? 'S’abonner' : 'Démarrer'}</button></div>
+      `;
+      card.querySelectorAll('.start-quiz').forEach(b => b.addEventListener('click', () => {
+        const quiz = MOCK.quizzes.find(x=>x.id===q.id);
+        if (quiz.access === 'premium' && !isPremiumActive()) { alert('Quiz premium — abonnez-vous.'); showScreen('subscribe'); return; }
+        startQuiz(quiz);
+      }));
+      return card;
+    }
+
+    function renderCoursesPreview() {
+      const container = document.getElementById('courses-preview'); container.innerHTML = '';
+      MOCK.chapters.slice(0,4).forEach(c => container.appendChild(createChapterCard(c)));
+    }
+
+    function renderAllCourses() {
+      const container = document.getElementById('all-courses'); container.innerHTML = '';
+      MOCK.chapters.forEach(c => {
+        const locked = (c.access === 'premium') && !isPremiumActive();
+        const el = document.createElement('div');
+        el.className = 'bg-white rounded-xl p-4 border shadow-sm flex items-start gap-3 ' + (locked ? 'locked' : '');
+        el.innerHTML = `
+          <div class="w-12 h-12 rounded-lg bg-[#1E3A8A] text-white flex items-center justify-center font-semibold">${c.topic[0]}</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold">${c.title}</div>
+            <div class="text-xs text-gray-500 mt-1">${c.excerpt}</div>
+            <div class="mt-2 text-xs text-gray-400">${c.access==='premium' ? 'Contenu Premium' : 'Contenu Gratuit'}</div>
+            <div class="mt-3">
+              <button class="px-3 py-1 bg-[#1E3A8A] text-white text-xs open-chapter" data-id="${c.id}">${locked ? 'S’abonner' : 'Voir le cours'}</button>
+              <button class="px-3 py-1 ml-2 text-xs border start-quiz" data-chapter="${c.id}">Exercice</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+      container.querySelectorAll('.open-chapter').forEach(b => b.addEventListener('click', () => openChapter(b.getAttribute('data-id'))));
+      container.querySelectorAll('.start-quiz').forEach(b => b.addEventListener('click', () => startQuizForChapter(b.getAttribute('data-chapter'))));
+    }
+
+    function renderExercisesList() {
+      const container = document.getElementById('exercises-list'); container.innerHTML = '';
+      MOCK.quizzes.forEach(q => container.appendChild(createQuizCard(q)));
+    }
+
+    /*******************************************
+     * Chapter open & quiz engine
+     *******************************************/
+    function openChapter(id) {
+      const ch = MOCK.chapters.find(x=>x.id===id);
+      if (!ch) { alert('Chapitre introuvable (mock)'); return; }
+      if (ch.access==='premium' && !isPremiumActive()) {
+        if (confirm('Contenu Premium. Voir options d\'abonnement ?')) showScreen('subscribe');
+        return;
+      }
+      // Simple content view (alert for prototype)
+      alert(`${ch.title}\n\n${ch.excerpt}\n\n(Contenu complet: vidéos, PDF, exercices à implémenter)`);
+      state.progress = Math.min(100, state.progress + 2);
+      saveState(); renderCommon();
+    }
+
+    // Quiz (simple)
+    let activeQuiz = null, userAnswers = {};
+    function startQuizForChapter(chapterId) {
+      const q = MOCK.quizzes.find(x=>x.chapterId===chapterId);
+      if (!q) { alert('Aucun quiz pour ce chapitre (mock)'); return; }
+      if (q.access==='premium' && !isPremiumActive()) { alert('Quiz Premium — abonnez-vous.'); showScreen('subscribe'); return; }
+      startQuiz(q);
+    }
+
+    function startQuiz(q) {
+      activeQuiz = JSON.parse(JSON.stringify(q));
+      userAnswers = {};
+      showScreen('exercises');
+      const container = document.getElementById('quiz-container'); container.classList.remove('hidden');
+      renderActiveQuiz();
+      container.scrollIntoView({behavior:'smooth'});
+    }
+
+    function renderActiveQuiz() {
+      const container = document.getElementById('quiz-container');
+      if (!activeQuiz) { container.innerHTML = '<div class="text-sm text-gray-500">Aucun quiz actif.</div>'; return; }
+      const qHtml = activeQuiz.questions.map((q,i)=> {
+        const choices = q.choices.map((c,idx)=> {
+          const checked = userAnswers[q.id]===idx ? 'ring-2 ring-[#1E3A8A]' : '';
+          return `<label class="block p-2 rounded-md border ${checked} cursor-pointer hover:bg-gray-50"><input type="radio" name="ans-${q.id}" value="${idx}" class="hidden" ${userAnswers[q.id]===idx? 'checked':''} /><div class="flex items-center gap-3"><div class="w-6 text-xs font-semibold">${String.fromCharCode(65+idx)}</div><div class="text-sm">${c}</div></div></label>`;
+        }).join('');
+        return `<div class="mb-4"><div class="font-medium mb-2">Q${i+1}. ${q.text}</div><div class="space-y-2">${choices}</div></div>`;
+      }).join('');
+      container.innerHTML = `
+        <div class="flex items-center justify-between mb-3"><div><div class="text-sm font-semibold">${activeQuiz.title}</div><div class="text-xs text-gray-500">${activeQuiz.questions.length} questions</div></div><div class="text-xs text-gray-500">Prototype</div></div>
+        <div id="quiz-questions">${qHtml}</div>
+        <div class="mt-3 flex items-center justify-between">
+          <button id="btn-cancel-quiz" class="px-3 py-2 text-xs border rounded-md">Abandonner</button>
+          <div><button id="btn-submit-quiz" class="px-3 py-2 bg-[#1E3A8A] text-white text-xs rounded-md">Soumettre</button></div>
+        </div>
+      `;
+      container.querySelectorAll('input[type=radio]').forEach(r=> r.addEventListener('change', ()=> {
+        const qid = r.name.replace('ans-',''); userAnswers[qid] = parseInt(r.value,10); renderActiveQuiz();
+      }));
+      document.getElementById('btn-cancel-quiz').addEventListener('click', ()=> { if (confirm('Abandonner le quiz ?')) { activeQuiz=null; container.classList.add('hidden'); }});
+      document.getElementById('btn-submit-quiz').addEventListener('click', submitQuiz);
+    }
+
+    function submitQuiz() {
+      if (!activeQuiz) return;
+      const total = activeQuiz.questions.length; let correct = 0;
+      activeQuiz.questions.forEach(q=> { if (userAnswers[q.id] !== undefined && userAnswers[q.id] === q.answerIndex) correct++; });
+      const rec = { id:'h'+Date.now(), quizId: activeQuiz.id, title: activeQuiz.title, score: correct, total, date: new Date().toISOString() };
+      state.history.push(rec); state.sessions += 1; state.progress = Math.min(100, state.progress + Math.round((correct/total)*5));
+      saveState();
+      alert(`Résultat: ${correct}/${total}`);
+      document.getElementById('quiz-container').classList.add('hidden'); activeQuiz=null; renderCommon(); showScreen('home');
+    }
+
+    /*******************************************
+     * Bac Blanc Simulator
+     *******************************************/
+    let bac = null; // current bac session
+    document.getElementById('btn-bac-cta').addEventListener('click', () => showScreen('bac'));
+    document.getElementById('btn-start-bac').addEventListener('click', startBac);
+    document.getElementById('btn-bac-load-sample').addEventListener('click', ()=> {
+      alert('Exemple de bac chargé (mock).');
+      // create sample set of questions for simulation
+    });
+
+    function startBac() {
+      const duration = parseInt(document.getElementById('bac-duration').value,10) * 60; // seconds
+      const qcount = parseInt(document.getElementById('bac-questions-count').value,10);
+      // generate qcount mock questions (mixture free/premium)
+      const pool = [];
+      for (let i=0;i<qcount;i++){
+        pool.push({ id: 'bq'+i, text:'Exercice de bac #' + (i+1), choices:['A','B','C','D'], answerIndex: Math.floor(Math.random()*4) });
+      }
+      bac = { id:'bac'+Date.now(), title:'Bac blanc simulation', durationSec: duration, questions: pool, startedAt: new Date().toISOString(), answers:{} };
+      renderBacRun();
+      document.getElementById('bac-run-container').classList.remove('hidden');
+      document.getElementById('bac-run-container').scrollIntoView({behavior:'smooth'});
+    }
+
+    let bacTimerInterval = null;
+    function renderBacRun() {
+      const c = document.getElementById('bac-run-container');
+      if (!bac) { c.innerHTML = ''; return; }
+      let timeLeft = bac.durationSec;
+      clearInterval(bacTimerInterval);
+      bacTimerInterval = setInterval(()=> {
+        timeLeft--;
+        if (timeLeft<=0) { clearInterval(bacTimerInterval); finishBac(); }
+        document.getElementById('bac-time-left').textContent = formatTime(timeLeft);
+      },1000);
+
+      const questionsHtml = bac.questions.map((q,idx)=> {
+        const choices = q.choices.map((ch,i) => {
+          const checked = bac.answers[q.id] === i ? 'ring-2 ring-[#1E3A8A]' : '';
+          return `<label class="block p-2 rounded-md border ${checked} cursor-pointer hover:bg-gray-50"><input type="radio" name="bac-${q.id}" value="${i}" class="hidden" ${bac.answers[q.id]===i ? 'checked':''} /> <div class="flex items-center gap-3"><div class="w-6 text-xs font-semibold">${String.fromCharCode(65+i)}</div><div class="text-sm">${ch}</div></div></label>`;
+        }).join('');
+        return `<div class="mb-4"><div class="font-medium mb-2">Q${idx+1}. ${q.text}</div><div class="space-y-2">${choices}</div></div>`;
+      }).join('');
+
+      c.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <div><div class="text-sm font-semibold">${bac.title}</div><div class="text-xs text-gray-500">${bac.questions.length} questions</div></div>
+          <div class="text-sm"><div class="text-xs text-gray-500">Temps restant</div><div id="bac-time-left" class="font-semibold text-[#1E3A8A]">${formatTime(bac.durationSec)}</div></div>
+        </div>
+        <div id="bac-questions-area">${questionsHtml}</div>
+        <div class="mt-3 flex items-center justify-between">
+          <button id="btn-abandon-bac" class="px-3 py-2 text-xs border rounded-md">Abandonner</button>
+          <div><button id="btn-submit-bac" class="px-3 py-2 bg-[#1E3A8A] text-white text-xs rounded-md">Terminer & Corriger</button></div>
+        </div>
+      `;
+
+      // wire question choices
+      c.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', () => {
+        const qid = r.name.replace('bac-',''); bac.answers[qid] = parseInt(r.value,10);
+        renderBacRun(); // re-render highlight
+      }));
+      document.getElementById('btn-abandon-bac').addEventListener('click', ()=> {
+        if (!confirm('Abandonner la simulation de bac blanc ?')) return;
+        clearInterval(bacTimerInterval);
+        bac = null; c.classList.add('hidden'); c.innerHTML=''; showScreen('home');
+      });
+      document.getElementById('btn-submit-bac').addEventListener('click', finishBac);
+    }
+
+    function finishBac() {
+      if (!bac) return;
+      // grade mock: compare answers
+      const total = bac.questions.length; let correct = 0;
+      bac.questions.forEach(q => { if (bac.answers[q.id] !== undefined && bac.answers[q.id] === q.answerIndex) correct++; });
+      const percent = Math.round((correct/total)*100);
+      const rec = { id:'bacrec'+Date.now(), title: bac.title, score: correct, total, percent, date: new Date().toISOString() };
+      state.history.push(rec); state.sessions += 1; state.progress = Math.min(100, state.progress + Math.round((percent/100)*10));
+      saveState();
+      clearInterval(bacTimerInterval);
+      alert(`Bac blanc terminé — Score: ${correct}/${total} (${percent}%)`);
+      // hide bac run UI
+      document.getElementById('bac-run-container').classList.add('hidden'); bac = null;
+      renderCommon(); showScreen('student-dashboard');
+    }
+
+    function formatTime(s) {
+      const h = Math.floor(s/3600); const m = Math.floor((s%3600)/60); const sec = s%60;
+      if (h>0) return `${h}h ${String(m).padStart(2,'0')}m`;
+      return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    }
+
+    /*******************************************
+     * Subscription / Payment (mock)
+     *******************************************/
+    function isPremiumActive() {
+      const s = state.subscription;
+      if (s.tier !== 'premium') return false;
+      if (!s.expiresAt) return false;
+      return new Date(s.expiresAt) > new Date();
+    }
+
+    document.querySelectorAll('.subscribe-btn').forEach(b => b.addEventListener('click', (e) => {
+      const plan = b.getAttribute('data-plan'); window._selectedPlan = plan;
+      alert(`Plan choisi (${plan}). Sélectionnez une méthode de paiement.`);
+    }));
+    document.querySelectorAll('.promo-btn').forEach(b => b.addEventListener('click', ()=> document.getElementById('promo-section').classList.toggle('hidden')));
+
+    document.getElementById('apply-promo').addEventListener('click', ()=> {
+      const code = document.getElementById('promo-code').value.trim().toUpperCase();
+      const feedback = document.getElementById('promo-feedback');
+      if (!code) { feedback.textContent='Entrez un code.'; feedback.style.color='red'; return; }
+      if (code==='MAURI50') { window._promo={code,type:'percent',value:50}; feedback.textContent='Code appliqué: 50%'; feedback.style.color='green'; }
+      else if (code==='MAURIFREE') { window._promo={code,type:'free_month',value:1}; feedback.textContent='Code appliqué: 1 mois gratuit'; feedback.style.color='green'; }
+      else { feedback.textContent='Code invalide.'; feedback.style.color='red'; }
+    });
+
+    document.getElementById('pay-bankily').addEventListener('click', ()=> {
+      if (!window._selectedPlan) return alert('Choisissez un plan d\'abonnement d\'abord.');
+      const amount = priceForPlan(window._selectedPlan); const discounted = applyPromo(amount);
+      if (confirm(`Bankily (simulation)\nMontant: ${discounted} MRU\nConfirmer ?`)) completeSubscription(window._selectedPlan, discounted, 'Bankily');
+    });
+    document.getElementById('pay-masrvi').addEventListener('click', ()=> {
+      if (!window._selectedPlan) return alert('Choisissez un plan d\'abonnement d\'abord.');
+      const amount = priceForPlan(window._selectedPlan); const discounted = applyPromo(amount);
+      if (confirm(`Masrvi (simulation)\nMontant: ${discounted} MRU\nConfirmer ?`)) completeSubscription(window._selectedPlan, discounted, 'Masrvi');
+    });
+
+    function priceForPlan(plan) { if (plan==='monthly') return 2000; if (plan==='yearly') return 20000; return 0; }
+    function applyPromo(amount) { const p = window._promo; if (!p) return amount; if (p.type==='percent') return Math.round(amount*(100-p.value)/100); if (p.type==='free_month') return amount===2000?0:amount; return amount; }
+    function completeSubscription(plan, paidAmount, method) {
+      const now = new Date(); const expires = new Date(now);
+      if (plan==='monthly') expires.setDate(now.getDate()+30); if (plan==='yearly') expires.setFullYear(now.getFullYear()+1);
+      state.subscription = { tier:'premium', plan, expiresAt: expires.toISOString(), promoUsed: window._promo?window._promo.code:null, lastPaid:{method,amount:paidAmount,date:now.toISOString()} };
+      saveState(); window._promo=null; window._selectedPlan=null;
+      alert(`Paiement simulé OK (${method}). Abonnement actif jusqu'au ${expires.toLocaleDateString()}.`);
+      renderCommon(); showScreen('home'); renderAllCourses(); renderCoursesPreview(); renderExercisesList();
+    }
+
+    /*******************************************
+     * Init
+     *******************************************/
+    function init() {
+      renderCommon(); renderCoursesPreview(); renderAllCourses(); renderExercisesList();
+      // wire nav buttons
+      document.getElementById('btn-start-quiz').addEventListener('click', ()=> {
+        const q = MOCK.quizzes.find(x=>x.access==='free'); if (q) startQuiz(q); else alert('Aucun quiz gratuit disponible (mock).');
+      });
+      // dashboard nav mapping
+      document.querySelectorAll('[data-nav]').forEach(b => b.addEventListener('click', ()=> {
+        const d = b.getAttribute('data-nav');
+        if (d==='home') showScreen('home');
+        else if (d==='courses') showScreen('courses');
+        else if (d==='exercises') showScreen('exercises');
+        else if (d==='bac') showScreen('bac');
+        else if (d==='subscribe') showScreen('subscribe');
+      }));
+      // role initial view
+      if (state.currentRole==='student') showScreen('student-dashboard'); 
+      else if (state.currentRole==='teacher') showScreen('teacher-dashboard');
+      else if (state.currentRole==='admin') showScreen('admin-dashboard');
+      // ensure selects reflect state
+      document.getElementById('role-switch').value = state.currentRole;
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
