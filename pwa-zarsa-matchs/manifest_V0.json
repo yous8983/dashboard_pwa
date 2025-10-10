@@ -1,0 +1,21 @@
+{
+  "name": "Zarsa's Matchs",
+  "short_name": "Zarsa PWA",
+  "description": "Tracker des matchs du club Zarsa A et Zarsa B.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#cc0000",
+  "icons": [
+    {
+      "src": "./assets/images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
